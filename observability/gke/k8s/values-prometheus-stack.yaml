@@ -1,0 +1,44 @@
+prometheus:
+  service:
+    type: LoadBalancer
+    port: 9090
+    targetPort: 9090
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: "stackdriver-exporter"
+        static_configs:
+         # provide the name of the stackdriver-exporter service and namespace
+          - targets: ["stackdriver-exporter-prometheus-stackdriver-exporter.monitoring.svc.cluster.local:9255"] 
+grafana:
+  service:
+    type: LoadBalancer
+    port: 3000 
+    targetPort: 3000 
+
+alertmanager:
+  service:
+    type: LoadBalancer
+    port: 9093
+    targetPort: 9093
+  replicas: 5
+
+nodeExporter:
+  enabled: false
+
+coreDns:
+  enabled: false
+
+kubeControllerManager:
+  enabled: false   
+
+kubeDns:
+  enabled: false   
+
+kubeEtcd:
+  enabled: false   
+
+kubeProxy:
+  enabled: false   
+
+kubeScheduler:
+  enabled: false   

@@ -1,0 +1,5 @@
+gcp:
+  bucketname:
+  token:
+server:
+  host: ":8080"

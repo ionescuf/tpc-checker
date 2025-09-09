@@ -1,0 +1,113 @@
+version: '3.6'
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+
+networks:
+  monitoring:
+    driver: bridge
+    name: monitoring-network
+
+services:
+  prometheus:
+    image: prom/prometheus:v3.4.2
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prometheus/rules:/etc/prometheus/rules
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/provisioning/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'
+    ports:
+      - "9093:9093"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  stackdriver-exporter:
+    #image: prometheuscommunity/stackdriver-exporter:latest
+    image: tpc-stackdriver-exporter
+    container_name: stackdriver-exporter
+    ports:
+      - "9255:9255"
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/etc/gcloud/key.json
+    command:
+      - "--google.universe-domain=apis-berlin-build0.goog"
+      - "--google.project-ids=eu0:observability-epam"
+      - "--monitoring.metrics-prefixes=compute.googleapis.com/instance/cpu"
+    volumes:
+      - /etc/gcloud/key.json:/etc/gcloud/key.json:ro
+    networks:
+      - monitoring
+    restart: unless-stopped
+
+  sample_app:
+    build: ./app
+    image: sample-app
+    container_name: sample-app
+    environment:
+      - LOG_LEVEL=info  # Set the log level for your application
+      - PORT=5000  # Port your app will run on
+      - PROMETHEUS_MULTIPROC_DIR=/app/logs  # Directory for Prometheus metrics
+    volumes:
+      - ./logs:/app/logs  # Mount a volume to access logs on your host
+    restart: always  # Automatically restart the container if it stops
+    networks:
+      - monitoring
+    ports:
+      - "5000:5000"
+    command: python main.py

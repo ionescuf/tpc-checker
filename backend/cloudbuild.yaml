@@ -1,0 +1,18 @@
+steps:
+  # Build the Docker image using the Dockerfile.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/tpc-auth-checker-backend:$_VERSION'
+      - '.'
+
+  # Push the Docker image to Google Container Registry.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/tpc-auth-checker-backend:$_VERSION'
+
+# Specify the images to be stored in the Container Registry.
+images:
+  - '$_REGION-docker.pkg.dev/$_PROJECT_ID/$_REPOSITORY_NAME/tpc-auth-checker-backend:$_VERSION'

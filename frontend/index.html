@@ -1,0 +1,574 @@
+<!doctype html>
+<html lang="en" class="h-100" data-bs-theme="auto">
+<head>
+    <script src="config.js"></script>
+    <script src="assets/js/color-modes.js"></script>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="generator" content="Hugo 0.122.0">
+    <title>TCP Test app</title>
+
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+
+        .b-example-divider {
+            width: 100%;
+            height: 3rem;
+            background-color: rgba(0, 0, 0, .1);
+            border: solid rgba(0, 0, 0, .15);
+            border-width: 1px 0;
+            box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+        }
+
+        .b-example-vr {
+            flex-shrink: 0;
+            width: 1.5rem;
+            height: 100vh;
+        }
+
+        .bi {
+            vertical-align: -.125em;
+            fill: currentColor;
+        }
+
+        .nav-scroller {
+            position: relative;
+            z-index: 2;
+            height: 2.75rem;
+            overflow-y: hidden;
+        }
+
+        .nav-scroller .nav {
+            display: flex;
+            flex-wrap: nowrap;
+            padding-bottom: 1rem;
+            margin-top: -1px;
+            overflow-x: auto;
+            text-align: center;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .btn-bd-primary {
+            --bd-violet-bg: #712cf9;
+            --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+            --bs-btn-font-weight: 600;
+            --bs-btn-color: var(--bs-white);
+            --bs-btn-bg: var(--bd-violet-bg);
+            --bs-btn-border-color: var(--bd-violet-bg);
+            --bs-btn-hover-color: var(--bs-white);
+            --bs-btn-hover-bg: #6528e0;
+            --bs-btn-hover-border-color: #6528e0;
+            --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+            --bs-btn-active-color: var(--bs-btn-hover-color);
+            --bs-btn-active-bg: #5a23c8;
+            --bs-btn-active-border-color: #5a23c8;
+        }
+
+        .bd-mode-toggle {
+            z-index: 1500;
+        }
+
+        .bd-mode-toggle .dropdown-menu .active .bi {
+            display: block !important;
+        }
+    </style>
+
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/sticky-footer-navbar.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+</head>
+<body class="d-flex flex-column h-100">
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="check2" viewBox="0 0 16 16">
+        <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+    </symbol>
+    <symbol id="circle-half" viewBox="0 0 16 16">
+        <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+    </symbol>
+    <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+        <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+    </symbol>
+    <symbol id="sun-fill" viewBox="0 0 16 16">
+        <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+    </symbol>
+</svg>
+
+<div class="dropdown position-fixed bottom-0 end-0 mb-3 me-3 bd-mode-toggle">
+    <button class="btn btn-bd-primary py-2 dropdown-toggle d-flex align-items-center"
+            id="bd-theme"
+            type="button"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+            aria-label="Toggle theme (auto)">
+        <svg class="bi my-1 theme-icon-active" width="1em" height="1em">
+            <use href="#circle-half"></use>
+        </svg>
+        <span class="visually-hidden" id="bd-theme-text">Toggle theme</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="bd-theme-text">
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light"
+                    aria-pressed="false">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#sun-fill"></use>
+                </svg>
+                Light
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
+                    aria-pressed="false">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#moon-stars-fill"></use>
+                </svg>
+                Dark
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+        <li>
+            <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="auto"
+                    aria-pressed="true">
+                <svg class="bi me-2 opacity-50" width="1em" height="1em">
+                    <use href="#circle-half"></use>
+                </svg>
+                Auto
+                <svg class="bi ms-auto d-none" width="1em" height="1em">
+                    <use href="#check2"></use>
+                </svg>
+            </button>
+        </li>
+    </ul>
+</div>
+
+<!-- Begin page content -->
+<main class="flex-shrink-0">
+    <div class="container">
+        <h1>TPC Auth Checker 0.4</h1>
+        <p class="lead mb-3">You can try various methods of authentication within GCP TPC by choosing it in the form
+            below.
+            After that you will be able to test it by performing some GCP actions</p>
+        <form class="row mb-5" id="optionsForm" enctype="multipart/form-data" method="POST" target="dummyframe">
+            <div class="col-md-2">
+                <!-- GCP Settings -->
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" name="universeDomain" id="universeDomain"
+                           placeholder="googleapis.com">
+                    <label for="universeDomain">Universe Domain</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <!-- Auth Settings -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="authType" name="authType" aria-label="Select auth type"
+                            onchange="changeAuthSettings()">
+                        <option selected value="1">Access Token</option>
+                        <option value="2">Credentials File</option>
+                        <option value="3">Login config + IdP token</option>
+                    </select>
+                    <label for="authType">Auth Type</label>
+                </div>
+                <div id="authDetails">
+                    <div class="form-floating mb-3">
+                    <textarea name="authToken" form="optionsForm" class="form-control" id="authToken"
+                              rows="3"></textarea>
+                        <label for="authToken">Auth Token</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <!-- Action Type select -->
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="actionType" aria-label="Select action type">
+                        <option selected value="1">Upload file to storage</option>
+<!--                        <option value="2">Run SQL in BigQuery</option>-->
+<!--                        <option value="2">Use translate</option>-->
+                    </select>
+                    <label for="actionType">Action Type</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <!-- Action Details -->
+                <div id="actionDetails">
+                    <div class="form-floating mb-3">
+                        <input name="bucketName" form="optionsForm" type="text" class="form-control" id="bucketName"
+                               placeholder="your-gcp-storage-bucket">
+                        <label for="bucketName">Storage Bucket ID</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="storageFile">File to upload to storage</label>
+                        <input form="optionsForm" class="form-control" type="file" id="storageFile" name="storageFile">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">Try it</button>
+            </div>
+        </form>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-auto">
+                        <h3>Source code</h3>
+                    </div>
+                    <div class="col-auto">
+                        <select
+                                class="form-select form-select-sm"
+                                id="source-code-language-selector"
+                                name="source-code-language-selector"
+                                aria-label="Language selector"
+                        >
+                            <option value="1" selected>Go</option>
+                            <option value="2">Python</option>
+<!--                            <option value="4">Java</option>-->
+<!--                            <option value="4">C#</option>-->
+<!--                            <option value="3">JavaScript</option>-->
+                        </select>
+                    </div>
+                </div>
+                <pre><code id="source-code-snippet">
+                </code></pre>
+            </div>
+            <div class="col-md-6">
+                <h3>Request logs</h3>
+                <ul id="requestLogs" class="list-group list-group-flush">
+                </ul>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer mt-auto py-3 bg-body-tertiary">
+    <div class="container">
+        <span class="text-body-secondary">Link to source code here.</span>
+    </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+<script>
+    const f = document.getElementById('optionsForm')
+    f.action = config.backendUrl + config.formActionPath
+    let logs = [];
+
+    async function sendData() {
+        const formData = new FormData(f);
+
+        try {
+            const response = await fetch(f.action, {
+                method: "POST",
+                body: formData,
+            })
+            const resp = await response.json()
+            if (response.status !== 200) {
+                let err = 'Something went wrong'
+                if (resp.error) {
+                    err = resp.error
+                }
+                Swal.fire({
+                    title: 'Error!',
+                    text: err,
+                    icon: 'error',
+                    confirmButtonText: 'Close'
+                })
+            } else {
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Action completed successfully',
+                    icon: 'success',
+                    confirmButtonText: 'Close'
+                })
+            }
+            const rl = document.getElementById('requestLogs')
+            if (resp.logs != null && resp.logs.length > 0) {
+                logs = resp.logs
+                const truncatedTextLen = 60
+                let logsHtml = ''
+                for (let i = 0; i < logs.length; i++) {
+                    let preview = logs[i].preview
+                    if (logs[i].preview.length > truncatedTextLen) {
+                        preview = logs[i].preview.substring(0, truncatedTextLen) + '...'
+                    }
+                    let logType = "Request"
+                    if (logs[i].log_type === "response") {
+                        logType = "Response"
+                    }
+                    logsHtml += '<li class="list-group-item"><div class="log-preview" id="log-preview-' + i + '"><b>' + logType + ':</b> ' + preview + '</div><div class="log-content" id="log-content-' + i + '"><b>Headers:</b>\n' + logs[i].headers + '<b>Body:</b>\n' + logs[i].body + '\n</div></li>'
+                }
+                rl.innerHTML = logsHtml
+                let coll = document.getElementsByClassName("log-preview");
+                for (let i = 0; i < coll.length; i++) {
+                    coll[i].addEventListener("click", function () {
+                        this.classList.toggle("active");
+                        let content = this.nextElementSibling;
+                        let logType = "Request"
+                        if (logs[i].log_type === "response") {
+                            logType = "Response"
+                        }
+                        let prefix = '<b>' + logType + ':</b> '
+                        if (content.style.display === "block") {
+                            if (logs[i].preview.length > truncatedTextLen) {
+                                coll[i].innerHTML = prefix + logs[i].preview.substring(0, truncatedTextLen) + '...'
+                            }
+                            content.style.display = "none";
+                        } else {
+                            if (logs[i].preview.length > truncatedTextLen) {
+                                coll[i].innerHTML = prefix + logs[i].preview
+                            }
+                            content.style.display = "block";
+                        }
+                    });
+                }
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    f.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendData();
+    }, false);
+
+    const at = document.getElementById("authType")
+
+    function changeAuthSettings() {
+        const ad = document.getElementById("authDetails")
+        switch (at.value) {
+            case "1":
+                ad.innerHTML = `
+                    <div class="form-floating mb-3">
+                    <textarea name="authToken" form="optionsForm" class="form-control" id="authToken"
+                              rows="3"></textarea>
+                        <label for="authToken">Auth Token</label>
+                    </div>`
+                document.getElementById('authToken').addEventListener("change", updateSourceCode)
+                break
+            case "2":
+                ad.innerHTML = `<div class="mb-3">
+                                    <label class="form-label" for="credFile">Credentials file</label>
+                                    <input class="form-control" type="file" name="credFile" id="credFile">
+                                </div>`
+                document.getElementById('credFile').addEventListener("change", updateSourceCode)
+                break
+            case "3":
+                ad.innerHTML = `<div class="mb-3">
+                                    <label class="form-label" for="loginConfigFile">Login config file</label>
+                                    <input class="form-control" type="file" name="loginConfigFile" id="loginConfigFile">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="tokenFile">Token file</label>
+                                    <input class="form-control" type="file" name="tokenFile" id="tokenFile">
+                                </div>`
+                document.getElementById('loginConfigFile').addEventListener("change", updateSourceCode)
+                document.getElementById('tokenFile').addEventListener("change", updateSourceCode)
+        }
+    }
+
+    window.onload = function () {
+        updateSourceCode()
+    }
+
+    const scl = document.getElementById('source-code-language-selector')
+
+    function updateSourceCode() {
+        const sc = document.getElementById('source-code-snippet')
+        let sourceCode
+        sc.className = ''
+        sc.removeAttribute('data-highlighted')
+        sc.classList.add('hljs')
+        switch (scl.value) {
+            case "1":
+                sc.classList.add("language-go")
+                sourceCode = getGoSourceCode()
+                break
+            case "2":
+                sc.classList.add("language-python")
+                sourceCode = getPythonSourceCode()
+                break
+        }
+        sc.textContent = sourceCode
+        hljs.highlightAll()
+    }
+
+    function getGoSourceCode() {
+        let sourceCode = ''
+        switch (at.value) {
+            case "1":
+                let oa2t = document.getElementById('authToken').value
+                if (oa2t === "" || oa2t === null) {
+                    oa2t = '<your-token-here>'
+                }
+                sourceCode += `
+import(
+    "cloud.google.com/go/storage"
+    "context"
+    "golang.org/x/oauth2"
+    "google.golang.org/api/option"
+    "io"
+)
+
+type TokenSource struct {
+	token string
+}
+
+func (ts *TokenSource) Token() (*oauth2.Token, error) {
+	return &oauth2.Token{
+		AccessToken: ts.token,
+	}, nil
+}
+
+token := "${oa2t}"
+`
+                break
+            case "2":
+                let credFilePath = document.getElementById('credFile').value
+                if (credFilePath === "" || credFilePath === null) {
+                    credFilePath = '<your-credentials-file>'
+                }
+                sourceCode += `
+import(
+    "cloud.google.com/go/storage"
+    "context"
+    "google.golang.org/api/option"
+)
+
+credFilePath := "${credFilePath}"
+`
+                break
+        }
+
+        let universeDomain = document.getElementById('universeDomain').value
+        if (universeDomain === null || universeDomain.length === 0) {
+            universeDomain = '<your-universe-domain>'
+        }
+        sourceCode += `universeDomain := "${universeDomain}"`
+
+        let bucketName = document.getElementById('bucketName').value
+        if (bucketName === "" || bucketName === null) {
+            bucketName = '<your-bucket-name>'
+        }
+        const storageFile = document.getElementById('storageFile')
+        let localFileName = storageFile.value
+        let destFileName = ''
+        if (localFileName === "" || localFileName === null) {
+            localFileName = '<your-bucket-name>'
+            destFileName = '<destination-file-name>'
+        } else {
+            destFileName = storageFile.files[0].name
+        }
+        sourceCode += `
+bucketName := "${bucketName}"
+localFilePath := "${localFileName}"
+storageFilePath := "${destFileName}"
+`
+
+        switch (at.value) {
+            case "1":
+                sourceCode +=
+                    `
+clientOptions := make([]option.ClientOption, 0)
+clientOptions = append(clientOptions, option.WithTokenSource(&TokenSource{token: token}))
+`
+                break
+            case "2":
+                sourceCode += `clientOptions := make([]option.ClientOption, 0)
+clientOptions = append(clientOptions, option.WithCredentialsFile(credFilePath))
+`
+                break
+        }
+
+        sourceCode +=
+            `// if universe domain is not specified googleapis.com will be used by default
+clientOptions = append(clientOptions, option.WithUniverseDomain(universeDomain))
+
+file,err := os.ReadFile(localFilePath)
+if err != nil {
+    //handle error
+}
+
+client, err := storage.NewClient(context.Background(), clientOptions...)
+if err != nil {
+    //handle error
+}
+defer client.Close()
+
+wr := client.Bucket(bucketName).Object(storageFilePath).NewWriter(context.Background())
+
+if _, err := io.Copy(wr, file); err != nil {
+    //handle error
+}
+if err := wr.Close(); err != nil {
+    //handle error
+}`
+        return sourceCode
+    }
+
+    function getPythonSourceCode() {
+        let universeDomain = document.getElementById('universeDomain').value
+        if (universeDomain === null || universeDomain.length === 0) {
+            universeDomain = '<your-universe-domain>'
+        }
+
+        let bucketName = document.getElementById('bucketName').value
+        if (bucketName === "" || bucketName === null) {
+            bucketName = '<your-bucket-name>'
+        }
+
+        return `
+from google.cloud import storage
+
+storage_client = storage.Client(client_options={
+    "credentials_file": "<path_to_cred_file>",
+    "universe_domain": "${universeDomain}"
+})
+bucket = storage_client.bucket("${bucketName}")
+blob = bucket.blob("<destination-file-name>")
+
+blob.upload_from_filename("<local-file-name>")
+`
+    }
+
+    scl.addEventListener('change', updateSourceCode)
+    document.getElementById('universeDomain').addEventListener("change", updateSourceCode)
+    document.getElementById('authToken').addEventListener("change", updateSourceCode)
+    document.getElementById('bucketName').addEventListener("change", updateSourceCode)
+    document.getElementById('storageFile').addEventListener("change", updateSourceCode)
+    at.addEventListener("change", updateSourceCode)
+</script>
+</html>
+
